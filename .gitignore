@@ -1,0 +1,23 @@
+./app/venv
+/venv/
+/venv
+venv/
+/media/
+/media
+media/
+
+# Django stuff:
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+*.log
+*.pot
+*.pyc
+__pycache__/
+static/
+media/
+**/__pycache__/
+**/**/__pycache__/*/
+*.sqlite3
+
+.env.*
