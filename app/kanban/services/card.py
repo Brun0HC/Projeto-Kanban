@@ -206,3 +206,20 @@ def deleteCard(id: int) -> dict:
         return {"success": "Card deleted"}
     except Exception as e:
         return {'internalerror': f'Error while deleting card: {str(e)}'}
+
+def linkCardLabel(dictionary: dict) -> dict:
+    id_card = dictionary.get('id_card')
+    id_label = dictionary.get('id_label')
+
+    try:
+        card = Card.objects.filter(id=id_card).first()
+        label = Label.objects.filter(id=id_label).first()
+        exists = CardLabel.objects.filter(card=card, label=label).first()
+        if exists:
+            exists.delete()
+            return {'success':"deleted"}
+
+        CardLabel.objects.create(card=card, label=label)
+        return {'success': 'card-label linked'}
+    except Exception as e:
+        return {'error': f'Erro to link label with card: {str(e)}'}
