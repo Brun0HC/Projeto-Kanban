@@ -1,5 +1,9 @@
 from django.db import models
 
+def get_default_due_date():
+    return timezone.now() + timedelta(days=2)
+
+
 # Create your models here.
 class Member(models.Model):
     name = models.CharField(max_length=255)
