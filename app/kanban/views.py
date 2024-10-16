@@ -57,3 +57,52 @@ class MemberView(ViewSet):
         elif 'error' in exec:
             return BadRequest(exec)
         return ResponseDefault(exec)
+
+class KanbanView(ViewSet):
+    queryset = Kanban.objects.all()
+    serializer_class = KanbanSerializer
+
+    def create(self, request, *args, **kwargs):
+        email = EMAIL_USER
+
+        serializer = KanbanSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        exec = createKanban(request, email)
+        if 'error' in exec:
+            return InternalError(error=exec)
+        return CreatedRequest()
+
+    @action(detail=True, methods=['patch'], url_path='update')
+    def change(self, request, pk=None, *args, **kwargs):
+        email = EMAIL_USER
+        
+        exec = updateKanban(request, pk, email)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+        
+    def list(self, request):
+        email = EMAIL_USER
+        exec = listKanbans(email)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(data=exec)
+
+    def retrieve(self, request, pk=None):
+        email = EMAIL_USER
+        exec = retrieveKanban(pk, email)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(data=exec)
+
+    @action(detail=True, methods=['get'], url_path='filter', name='Filtered-Cards')
+    def filter(self, request: Request, pk=None):
+        email = EMAIL_USER
+        serializer = FilterSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        
+        exec = retrieveFilteredKanban(pk,request.query_params, email)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
