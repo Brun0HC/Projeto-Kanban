@@ -41,16 +41,10 @@ class Column(models.Model):
 class Label(models.Model):
     text = models.CharField(max_length=255)
     color = models.CharField(max_length=255)
+    idKanban = models.ForeignKey(Kanban, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.text
-
-class LabelInKanban(models.Model):
-    label = models.ForeignKey(Label, related_name='label', on_delete=models.CASCADE)
-    kanban = models.ForeignKey(Kanban, related_name='kanban', on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return f"{self.kanban.name} - {self.label.text}"
 
 class Card(models.Model):
     title = models.CharField(max_length=255)

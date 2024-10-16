@@ -35,6 +35,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('text', models.CharField(max_length=255)),
                 ('color', models.CharField(max_length=255)),
+                ('idKanban', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kanban.kanban')),
             ],
         ),
         migrations.CreateModel(
@@ -74,14 +75,7 @@ class Migration(migrations.Migration):
                 ('label', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kanban.label')),
             ],
         ),
-        migrations.CreateModel(
-            name='LabelInKanban',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('kanban', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='kanban', to='kanban.kanban')),
-                ('label', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='label', to='kanban.label')),
-            ],
-        ),
+
         migrations.AddField(
             model_name='kanban',
             name='idMemberCreator',
