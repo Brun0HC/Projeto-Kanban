@@ -106,3 +106,43 @@ class KanbanView(ViewSet):
         if 'error' in exec:
             return BadRequest(exec)
         return ResponseDefault(exec)
+
+class ColumnView(ViewSet):
+    queryset = Column.objects.all()
+    serializer_class = ColumnSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = ColumnSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        exec = createColumn(request.data)
+        if 'error' in exec:
+            return InternalError(error=exec)
+        return CreatedRequest()
+
+    def list(self, request, *args, **kwargs):
+        return ResponseDefault(listColumn())
+
+    def retrieve(self, request, pk=None):
+        exec = retrieveColumn(pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+
+        serializer = ColumnSerializer(data=request.data, partial = True)
+        serializer.is_valid(raise_exception=True)
+        exec = updateColumn(request.data, pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
+    def destroy(self, request, pk=None):
+
+        exec = deleteColumn(pk)
+        if 'internalerror' in exec:
+            return InternalError(error=exec)
+        elif 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
