@@ -1,5 +1,5 @@
 # Models
-from kanban.models import Kanban, Card, Label, Column, Member, Attachment
+from kanban.models import *
 from django.db.models import Max
 
 # Django

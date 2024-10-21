@@ -5,7 +5,7 @@ from django.forms import model_to_dict
 # DJANGO
 from django.conf import settings
 import os
-import requests
+
 
 # settings
 from datetime import datetime

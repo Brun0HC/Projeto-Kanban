@@ -1,12 +1,11 @@
 # Models
-from kanban.models import Goal, Kanban, Column, Card, CardLabel, CardMember, Label, Member, MemberInKanban, Sprint, Attachment
+from kanban.models import *
 from django.forms.models import model_to_dict
 from datetime import date
 
 # DJANGO
 from django.conf import settings
 import os
-import requests
 
 # settings
 from datetime import datetime

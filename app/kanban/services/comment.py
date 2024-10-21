@@ -4,7 +4,6 @@ from kanban.models import Card, Comment, Kanban, Member, MemberInKanban
 # DJANGO 
 from django.conf import settings
 import os
-import requests
 
 # settings
 from datetime import datetime

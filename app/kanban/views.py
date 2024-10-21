@@ -5,6 +5,13 @@ from project.settings import EMAIL_USER
 
 # services
 from kanban.services.member import *
+from kanban.services.kanban import *
+from kanban.services.column import *
+from kanban.services.label import *
+
+
+# serializers
+from kanban.serializer import *
 
 class MemberView(ViewSet):
 
@@ -146,3 +153,52 @@ class ColumnView(ViewSet):
             return BadRequest(exec)
         return ResponseDefault(exec)
 
+class LabelView(ViewSet):
+
+    queryset = Label.objects.all()
+    serializer_class = LabelSerializer
+
+    def create(self, request, *args, **kwargs):
+        
+        serializer = LabelSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        exec = createLabel(request.data)
+        if 'error' in exec:
+            return InternalError(error=exec)
+        return CreatedRequest(exec)
+
+    @action(detail=False, methods=['get'], url_path='listLabels')
+    def listLabels(self, request, *args, **kwargs):
+        
+        kanban_id = request.query_params.get('kanban')
+        return ResponseDefault(listLabel(kanban_id))
+
+    def retrieve(self, request, pk=None):
+    
+        exec = retrieveLabel(pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+        
+        serializer = ColumnSerializer(data=request.data, partial = True)
+        serializer.is_valid(raise_exception=True)
+        exec = updateLabel(request.data, pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+    
+    @action(detail=True, methods=['delete'], url_path='delete')
+    def delete(self, request, pk=None):
+        
+        kanban_id = request.query_params.get('kanban')
+        exec = deleteLabel(pk, kanban_id)
+        if 'internalerror' in exec:
+            return InternalError(error=exec)
+        elif 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
+
+        

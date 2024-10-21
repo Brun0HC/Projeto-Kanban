@@ -1,10 +1,9 @@
 # Models
-from kanban.models import Checklist, Column, Goal, Kanban, Label, Member, Card, CardLabel, CardMember, Comment, MemberInKanban,LabelInKanban, Sprint, Task, Attachment
+from kanban.models import *
 from django.db.models import Max
 
 # Django
 from django.forms.models import model_to_dict
-import requests
 from django.db import transaction
 
 

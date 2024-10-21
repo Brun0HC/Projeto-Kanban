@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,9 @@ SECRET_KEY = 'django-insecure-vg%mv@_m^8kqn@)z^!2rw+=92wh4n4qzxto(ssp((n3*4vlw@b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = int(os.environ.get("DEBUG", default=1))
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default='localhost').split(" ")
+CSRF_TRUSTED_ORIGINS = os.environ.get("DJANG_CSRF_TRUSTED_ORIGINS", default='http://localhost').split(" ")
 
 
 # Application definition
@@ -37,6 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #rest
+    'rest_framework',
+    'rest_framework.authtoken',
+    # CORS
+    'corsheaders',
 
     # KANBAN
     'kanban',
@@ -50,6 +59,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # CORS
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "project.swagger.SwaggerAuthMiddleware",
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -78,8 +91,12 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
@@ -126,5 +143,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
+CORS_ALLOW_ALL_ORIGINS = True 
 EMAIL_USER= 'admin@admin.com'
