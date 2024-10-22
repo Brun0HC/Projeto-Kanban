@@ -16,7 +16,6 @@ from typing import Optional, Dict, Set, List
 def createKanban(dictionary:dict, email:str) -> dict:
     name = dictionary.data.get('name')
     imagem = dictionary.data.get('imagem')
-    thumbnail = dictionary.data.get('thumbnail')
     member = Member.objects.filter(email=email).first()
     if not member:
         return {'error': 'Member not found'}
@@ -25,7 +24,6 @@ def createKanban(dictionary:dict, email:str) -> dict:
         kb = Kanban.objects.create(
             name = name,
             imagem = imagem,
-            thumbnail=thumbnail,
             idMemberCreator = member
         )
         MemberInKanban.objects.create(

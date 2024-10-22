@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
+
 
 def get_default_due_date():
     return timezone.now() + timedelta(days=2)

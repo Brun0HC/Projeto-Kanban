@@ -41,7 +41,7 @@ def listMembersByKanban(email, pk: int) -> dict:
         return {'error': 'You are not a member of this Kanban'}
 
     member_ids_in_kanban = MemberInKanban.objects.filter(idKanban=pk).values_list('idMember', flat=True)
-    members = Member.objects.filter(id__in=member_ids_in_kanban).values('id', 'name', 'email',"image")
+    members = Member.objects.filter(id__in=member_ids_in_kanban).values('id', 'name', 'email')
     return {'members': list(members)}
 
 def updateMember(dictionary: dict, email: str) -> dict:

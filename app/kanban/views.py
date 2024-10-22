@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from rest_framework.viewsets import ViewSet
+from rest_framework.decorators import action
+from rest_framework.request import Request
 
 # settings
 from project.settings import EMAIL_USER
@@ -8,7 +11,11 @@ from kanban.services.member import *
 from kanban.services.kanban import *
 from kanban.services.column import *
 from kanban.services.label import *
+from kanban.services.card import *
+from kanban.services.comment import *
 
+# responses
+from kanban.responses import *
 
 # serializers
 from kanban.serializer import *
@@ -200,5 +207,115 @@ class LabelView(ViewSet):
             return BadRequest(exec)
         return ResponseDefault(exec)
 
+class CardView(ViewSet):
 
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
+
+    def create(self, request, *args, **kwargs):
         
+        serializer = CardSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = EMAIL_USER
+        exec = createCard(request.data, email)
+        if 'error' in exec:
+            return InternalError(error=exec.get('error', 'not found error'))
+        return CreatedRequest()
+        
+    @action(detail=False, methods=['post'], name='Link-Card-Label')
+    def linkCardLabel(self, request):
+        serializer = CardLabelSeriaizer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        exec = linkCardLabel(request.data)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+    
+    @action(detail=False, methods=['post'], name='Link-Card-Member')
+    def linkCardMember(self, request):
+        serializer = CardMemberSeriaizer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        exec = linkCardMember(request.data)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
+    def list(self, request, *args, **kwargs):
+        cards = listCard()
+        return ResponseDefault(cards)
+       
+    @action(detail=True, methods=['get'], url_path='visualize')
+    def visualize(self, request, pk=None):
+        kanban_id = request.query_params.get('kanban')
+        if not kanban_id:
+            return BadRequest({"error": "kanban_id is required"})
+        email=EMAIL_USER
+        exec = retrieveCard(pk, kanban_id, email)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
+    def partial_update(self, request, pk=None, *args, **kwargs):
+        serializer = CardSerializer(data=request.data, partial = True)
+        serializer.is_valid(raise_exception=True)
+        exec = updateCard(request.data, pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+    
+    def destroy(self, request, pk=None):
+        exec = deleteCard(pk)
+        if 'internalerror' in exec:
+            return InternalError(error=exec)
+        elif 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+        
+class CommentView(ViewSet):
+
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    #@swagger_auto_schema(responses=CommentListResponse)
+    def list(self, request, *args, **kwargs):
+        return ResponseDefault(listComments())
+
+    #@swagger_auto_schema(responses=CommentListResponse)
+    @action(detail=True, methods=['get'], url_path='visualize')
+    def visualize(self, request, pk=None):
+        email=EMAIL_USER
+        exec = visualizeComment(request, email, pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+    
+    #@swagger_auto_schema(responses=CommentUpdateResponse)
+    @action(detail=True, methods=['patch'], url_path='change')
+    def change(self, request, pk=None):
+        serializer = CommentSerializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        email=EMAIL_USER
+        exec = changeComment(request, email, pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+
+    #@swagger_auto_schema(request_body=CommentCreateResponse)
+    def create(self, request, *args, **kwargs):
+        serializer = CommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email=EMAIL_USER
+        exec = createComment(request, email)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return CreatedRequest()
+    
+    #@swagger_auto_schema(responses=CommentDeleteResponse)
+    @action(detail=True, methods=['delete'], url_path='delete')
+    def delete(self, request, pk=None):
+        email=EMAIL_USER
+        exec = deleteComment(request, email, pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault('Deleted')

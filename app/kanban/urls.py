@@ -10,11 +10,11 @@ def getRouter():
 
 router = getRouter()
 router.register(r'member', MemberView)
-# router.register(r'kanban', KanbanView)
-# router.register(r'column', ColumnView)
-# router.register(r'label', LabelView)
-# router.register(r'card', CardView)
-# router.register(r'comment', CommentView)
+router.register(r'kanban', KanbanView)
+router.register(r'column', ColumnView)
+router.register(r'label', LabelView)
+router.register(r'card', CardView)
+router.register(r'comment', CommentView)
 
 
 urlpatterns = [

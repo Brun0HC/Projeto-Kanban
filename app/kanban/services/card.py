@@ -215,8 +215,11 @@ def linkCardLabel(dictionary: dict) -> dict:
         label = Label.objects.filter(id=id_label).first()
         exists = CardLabel.objects.filter(card=card, label=label).first()
         if exists:
-            exists.delete()
-            return {'success':"deleted"}
+            try:
+                exists.delete()
+                return {'success':"deleted"}
+            except Exception as e:
+                return {'error': str(e)}
 
         CardLabel.objects.create(card=card, label=label)
         return {'success': 'card-label linked'}
