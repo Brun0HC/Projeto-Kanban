@@ -48,7 +48,7 @@ def listLabel(kanban_id: int) -> dict:
     kanban=Kanban.objects.filter(id=kanban_id).first()
     if not kanban:
         return {"error":'Kanban not found'}
-    labels= Labels.objects.filter(idKanban=kanban).values(
+    labels= Label.objects.filter(idKanban=kanban).values(
         "id",
         "text",
         "color"

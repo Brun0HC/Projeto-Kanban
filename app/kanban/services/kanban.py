@@ -61,7 +61,7 @@ def listKanbans(email) -> dict:
 
     for kanban in kanbans:
         # Converte o kanban em dicionário
-        kanban_dict = model_to_dict(kanban, fields=['id', 'name', 'imagem','image_file','idMemberCreator'])
+        kanban_dict = model_to_dict(kanban, fields=['id', 'name', 'imagem','idMemberCreator'])
     
         kanban_dict['memberCreator'] = kanban.idMemberCreator.name
         kanban_dict['emailCreator'] = kanban.idMemberCreator.email
@@ -86,7 +86,7 @@ def get_kanban_with_access_check(kanban_id: int, email: str) -> Optional[Dict]:
 def get_kanban_base_info(kanban: Kanban, member: Member) -> Dict:
     """Retorna as informações base do Kanban."""
     retorno = {
-        "kanban": model_to_dict(kanban, fields=['id', 'name', 'imagem', 'image_file', 'idMemberCreator']),
+        "kanban": model_to_dict(kanban, fields=['id', 'name', 'imagem', 'idMemberCreator']),
         "columns": []
     }
     retorno["kanban"]["memberCreator"] = kanban.idMemberCreator.name

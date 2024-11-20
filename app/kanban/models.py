@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
-
+import uuid
 
 def get_default_due_date():
     return timezone.now() + timedelta(days=2)
@@ -19,7 +19,6 @@ class Member(models.Model):
 class Kanban(models.Model):
     name = models.CharField(max_length=255)
     imagem = models.CharField(max_length=255, null=True, blank=True, default=None)
-    image_file = models.CharField(max_length=255, null=True, blank=True, default=None)
     idMemberCreator = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
@@ -34,6 +33,7 @@ class MemberInKanban(models.Model):
         return f"{self.idMember.name} in {self.idKanban.name} as {self.role}"
 
 class Column(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=True)
     name = models.CharField(max_length=255)
     idKanban = models.ForeignKey(Kanban, on_delete=models.CASCADE)
     position = models.IntegerField(default=0)
@@ -50,14 +50,13 @@ class Label(models.Model):
         return self.text
 
 class Card(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=True)
     title = models.CharField(max_length=255)
     idMemberCreator = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True)
     textDescription = models.TextField(blank=True, null=True)
     column = models.ForeignKey(Column, on_delete=models.CASCADE, default=None)
     created_at = models.DateTimeField(auto_now=True)
     position = models.IntegerField(default=0)
-    start = models.DateField(auto_now_add=True)
-    due = models.DateField(auto_now_add=get_default_due_date)
     concluded = models.BooleanField(default=False)
 
     def __str__(self):

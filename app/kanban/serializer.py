@@ -25,20 +25,19 @@ class MemberSerializer(serializers.Serializer):
 class KanbanSerializer(serializers.Serializer):
     name = serializers.CharField()
     imagem = serializers.CharField(required=False)
-    image_file = serializers.ImageField(required=False)
 
 class ColumnSerializer(serializers.Serializer):
+    uuid = serializers.CharField()
     name = serializers.CharField(required=False)
     position = serializers.IntegerField(required=False, validators=[MinValueValidator(0)])
     idKanban = serializers.IntegerField(validators=[MinValueValidator(0)])
 
 class CardSerializer(serializers.Serializer):
+    uuid = serializers.CharField()
     title = serializers.CharField(max_length=255)
     column = serializers.IntegerField(validators=[MinValueValidator(0)])
     position = serializers.IntegerField(required=False, validators=[MinValueValidator(0)])
     textDescription = serializers.CharField(allow_blank=True, required=False)
-    start = serializers.DateField(required=False)
-    due = serializers.DateField(required=False)
     concluded = serializers.BooleanField(required=False)
 
 class FilterSerializer(serializers.Serializer):

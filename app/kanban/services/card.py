@@ -14,10 +14,9 @@ def findCard(id):
         return None
 
 def createCard(dictionary: dict, email) -> dict:
+    uuid = dictionary.get('uuid')
     title = dictionary.get('title')
     columnId = dictionary.get('column')
-    start = dictionary.get('start')
-    due = dictionary.get('due')
     textDescription = dictionary.get('textDescription')
     id_creator = Member.objects.filter(email=email).first()
     if not id_creator:
@@ -35,17 +34,16 @@ def createCard(dictionary: dict, email) -> dict:
 
     try:
         new_card =Card.objects.create(
+            uuid=uuid,
             title = title,
             idMemberCreator = id_creator,
             textDescription = textDescription,
             column=column,
-            position = new_position,
-            start = start,
-            due = due
+            position = new_position
             )      
     except Exception as e:
         return {'error': f'Failed to create Card: {str(e)}'}
-    return {"card": new_card.pk}
+    return {"card": new_card.uuid}
 
 def linkCardMember(dictionary: dict) -> dict:
     card_id = dictionary.get('id_card')
@@ -80,8 +78,6 @@ def listCard() -> dict:
 def updateCard(dictionary: dict, id: int) -> dict:
     title = dictionary.get('title')
     textDescription = dictionary.get('textDescription')
-    start = dictionary.get('start')
-    due = dictionary.get('due')
     new_position = dictionary.get('position')
     concluded = dictionary.get('concluded', None)
     if concluded != None:
@@ -133,8 +129,6 @@ def updateCard(dictionary: dict, id: int) -> dict:
             card.position = new_position
 
         card.concluded = concluded if concluded != None else card.concluded
-        card.start = start if start != None else card.start
-        card.due = due if due != None else card.due
         card.title = title if title != None else card.title
         card.column = column if column != None else card.column
         card.textDescription = textDescription if textDescription != None else card.textDescription           
@@ -160,8 +154,6 @@ def retrieveCard(id: int, kanban_id: int, email: str) -> dict:
         return {"error": "member does not have access to this kanban"}
         
     modelCard = model_to_dict(card, fields=['id', 'title', 'idMemberCreator', 'textDescription', 'position', 'concluded'])
-    modelCard['start'] = card.start.isoformat() if card.start else None
-    modelCard['due'] = card.due.isoformat() if card.due else None
     modelCard['created_at'] = card.created_at.isoformat() if card.created_at else None
     modelCard['memberCreator_name'] = card.idMemberCreator.name
     modelCard['column'] = card.column.name

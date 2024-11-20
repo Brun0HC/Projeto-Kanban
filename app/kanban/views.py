@@ -277,11 +277,9 @@ class CommentView(ViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    #@swagger_auto_schema(responses=CommentListResponse)
     def list(self, request, *args, **kwargs):
         return ResponseDefault(listComments())
 
-    #@swagger_auto_schema(responses=CommentListResponse)
     @action(detail=True, methods=['get'], url_path='visualize')
     def visualize(self, request, pk=None):
         email=EMAIL_USER
@@ -290,7 +288,6 @@ class CommentView(ViewSet):
             return BadRequest(exec)
         return ResponseDefault(exec)
     
-    #@swagger_auto_schema(responses=CommentUpdateResponse)
     @action(detail=True, methods=['patch'], url_path='change')
     def change(self, request, pk=None):
         serializer = CommentSerializer(data=request.data, partial=True)
@@ -301,7 +298,6 @@ class CommentView(ViewSet):
             return BadRequest(exec)
         return ResponseDefault(exec)
 
-    #@swagger_auto_schema(request_body=CommentCreateResponse)
     def create(self, request, *args, **kwargs):
         serializer = CommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -311,7 +307,6 @@ class CommentView(ViewSet):
             return BadRequest(exec)
         return CreatedRequest()
     
-    #@swagger_auto_schema(responses=CommentDeleteResponse)
     @action(detail=True, methods=['delete'], url_path='delete')
     def delete(self, request, pk=None):
         email=EMAIL_USER

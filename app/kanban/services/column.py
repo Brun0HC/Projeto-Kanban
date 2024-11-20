@@ -12,6 +12,7 @@ def findColumn(id: int) -> Column:
         return None
     
 def createColumn(dictionary: dict) -> dict:
+    uuid = dictionary.get('uuid')
     name = dictionary.get('name')
     idKanban = dictionary.get('idKanban')
     kanban = Kanban.objects.filter(id=idKanban).first()
@@ -22,6 +23,7 @@ def createColumn(dictionary: dict) -> dict:
 
     try:
         Column.objects.create(
+            uuid=uuid,
             name = name,
             idKanban = kanban,
             position = new_position
@@ -71,7 +73,7 @@ def retrieveColumn(id: int) -> dict:
     if not column:
         return {"error": "Column not found"}
 
-    column_data = model_to_dict(column, fields=['name', 'idKanban'])
+    column_data = model_to_dict(column, fields=['uuid','name', 'idKanban'])
     column_data['idKanban'] = column.idKanban_id
 
     # Obter os cartões (cards) na coluna
@@ -88,6 +90,7 @@ def retrieveColumn(id: int) -> dict:
         
         detailed_card = {
             'id': card['id'],
+            'uuid': card['uuid'],
             'title': card['title'],
             'idMemberCreator': card['idMemberCreator_id'],
             'textDescription': card['textDescription'],
