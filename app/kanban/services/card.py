@@ -206,14 +206,25 @@ def linkCardLabel(dictionary: dict) -> dict:
         card = Card.objects.filter(id=id_card).first()
         label = Label.objects.filter(id=id_label).first()
         exists = CardLabel.objects.filter(card=card, label=label).first()
-        if exists:
-            try:
-                exists.delete()
-                return {'success':"deleted"}
-            except Exception as e:
-                return {'error': str(e)}
-
-        CardLabel.objects.create(card=card, label=label)
+        if not exists:
+            CardLabel.objects.create(card=card, label=label)
         return {'success': 'card-label linked'}
     except Exception as e:
         return {'error': f'Erro to link label with card: {str(e)}'}
+    
+def unlinkCardLabel(dictionary: dict) -> dict:
+    id_card = dictionary.get('id_card')
+    id_label = dictionary.get('id_label')
+
+    card = Card.objects.filter(id=id_card).first()
+    label = Label.objects.filter(id=id_label).first()
+    exists = CardLabel.objects.filter(card=card, label=label).first()
+    if exists:
+        try:
+            exists.delete()
+            return {'success':"unlinked"}
+        except Exception as e:
+            return {'error': str(e)}
+    return {}
+    
+    

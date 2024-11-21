@@ -232,6 +232,16 @@ class CardView(ViewSet):
             return BadRequest(exec)
         return ResponseDefault(exec)
     
+    @action(detail=False, methods=['post'], name='Unlink-Card-Label')
+    def unlinkCardLabel(self, request):
+        serializer = CardLabelSeriaizer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        exec = unlinkCardLabel(request.data)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(exec)
+    
     @action(detail=False, methods=['post'], name='Link-Card-Member')
     def linkCardMember(self, request):
         serializer = CardMemberSeriaizer(data=request.data)
