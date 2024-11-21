@@ -130,6 +130,7 @@ def get_columns_and_cards(kanban: Kanban, card_ids: Optional[Set[int]] = None) -
                 "member__name", "member__email"
             )
             card_dict["members"] = list(card_members)
+            card_dict["comments"] = Comment.objects.filter(idCard=card).values()
 
             card_dicts.append(card_dict)
 
