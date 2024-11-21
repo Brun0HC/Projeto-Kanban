@@ -41,3 +41,11 @@
 ### 6. No Django Admin, adicione um membro:
    - Navegue até a seção "Membros".
    - Adicione um novo membro com um endereço de e-mail criado no passo 3.
+
+### 7. Download do Frontend:
+   - Baixe o código da aplicação frontend no link: https://github.com/Brun0HC/kanban-frontend
+   - Instale os modulos do Node com ```npm i```.
+   - Execute ```npm run dev```.
+
+### 8. Vizualizar Frontend:
+   - Acesse http://localhost:5173
