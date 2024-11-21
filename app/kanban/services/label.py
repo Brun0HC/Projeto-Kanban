@@ -20,7 +20,7 @@ def createLabel(dictionary:dict) -> dict:
         lb = Label.objects.create(
             text = text,
             color = color,
-            idKanban=idKanban
+            idKanban=kb
         )
         
     except Exception as e:
