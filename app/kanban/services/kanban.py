@@ -19,7 +19,7 @@ def createKanban(dictionary:dict, email:str) -> dict:
     member = Member.objects.filter(email=email).first()
     if not member:
         return {'error': 'Member not found'}
-    
+
     try:
         kb = Kanban.objects.create(
             name = name,
@@ -62,10 +62,10 @@ def listKanbans(email) -> dict:
     for kanban in kanbans:
         # Converte o kanban em dicionário
         kanban_dict = model_to_dict(kanban, fields=['id', 'name', 'imagem','idMemberCreator'])
-    
+
         kanban_dict['memberCreator'] = kanban.idMemberCreator.name
         kanban_dict['emailCreator'] = kanban.idMemberCreator.email
-        
+
         kanbans_list.append(kanban_dict)
 
     return {"kanbans": kanbans_list}
@@ -92,6 +92,8 @@ def get_kanban_base_info(kanban: Kanban, member: Member) -> Dict:
     retorno["kanban"]["memberCreator"] = kanban.idMemberCreator.name
     retorno["kanban"]["emailCreator"] = kanban.idMemberCreator.email
     retorno["kanban"]["memberRole"] = MemberInKanban.objects.filter(idKanban=kanban, idMember=member).values('role')
+    retorno["kanban"]["labels"] = Label.objects.filter(idKanban=kanban).values()
+
 
     return retorno
 
@@ -101,7 +103,7 @@ def get_columns_and_cards(kanban: Kanban, card_ids: Optional[Set[int]] = None) -
     columns_list = []
 
     for column in columns:
-        column_dict = model_to_dict(column, fields=['id', 'name', "position"])
+        column_dict = model_to_dict(column, fields=["uuid",'id', 'name', "position"])
         column_dict['idKanban'] = column.idKanban_id
 
         # Obter todos os cartões da coluna, filtrando se card_ids estiver definido
@@ -113,7 +115,7 @@ def get_columns_and_cards(kanban: Kanban, card_ids: Optional[Set[int]] = None) -
         card_dicts = []
 
         for card in cards:
-            card_dict = model_to_dict(card, fields=["id", "title", "textDescription", 'position'])
+            card_dict = model_to_dict(card, fields=["uuid", "id", "title", "textDescription", 'position'])
             card_dict["creator"] = card.idMemberCreator.name if card.idMemberCreator else None
             card_dict["creator_email"] = card.idMemberCreator.email if card.idMemberCreator else None
 
