@@ -103,6 +103,13 @@ class KanbanView(ViewSet):
             return BadRequest(exec)
         return ResponseDefault(data=exec)
 
+    def destroy(self, request, pk=None):
+        exec = deleteKanban(pk)
+        if 'error' in exec:
+            return BadRequest(exec)
+        return ResponseDefault(data=exec)
+
+
     def retrieve(self, request, pk=None):
         email = EMAIL_USER
         exec = retrieveKanban(pk, email)

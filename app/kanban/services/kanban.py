@@ -189,3 +189,10 @@ def retrieveFilteredKanban(kanban_id: int, filters: dict, email) -> dict:
     retorno["columns"] = get_columns_and_cards(kanban, card_ids)
 
     return retorno
+
+def deleteKanban(pk: int) -> dict:
+    kanban = Kanban.objects.filter(pk=pk).first()
+    if kanban:
+        kanban.delete()
+        return {'success': 'deleted'}
+    return {'error': 'kanban not found'}
