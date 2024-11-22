@@ -46,7 +46,9 @@ def updateKanban(dictionary: dict, pk: int, email: str):
         return {'errro':'You do not have access to this kanban'}
 
     name = dictionary.data.get('name')
+    imagem = dictionary.data.get('imagem')
     kanban.name = name if name != None else kanban.name
+    kanban.imagem = imagem if imagem != None else kanban.imagem
     kanban.save()
     return {'success': 'changed'}
 
